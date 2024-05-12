@@ -5,6 +5,7 @@ const net = require('net');
 let telnetClient;
 let longPollingClients = [];
 
+
 const server = http.createServer((req, res) => {
   
   if (req.url === '/') {
@@ -52,7 +53,7 @@ const server = http.createServer((req, res) => {
   <title>Telnet Console</title>
 </head>
 <body>
-  <textarea id="terminal" autofocus readonly></textarea>
+  <div id="terminal"></div>
   <form id="commandForm" action="/send-command" method="post">
     <input type="text" id="commandInput" name="command" required>
     <button type="submit">Send</button>
@@ -61,7 +62,7 @@ const server = http.createServer((req, res) => {
     var terminal = document.getElementById('terminal');
 
     function updateTerminal(text) {
-      terminal.value += text; // Append response to the terminal
+      terminal.innerHTML += text; // Append response to the terminal
       terminal.scrollTop = terminal.scrollHeight; // Scroll to the bottom
     }
 
@@ -89,7 +90,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       console.log('Received command:', body);
       if (telnetClient && !telnetClient.destroyed) {
-        const command = Buffer.from(body.trim(), 'utf-8'); // Encode the command as UTF-8
+        const command = Buffer.from(body.trim()); // Remove 'utf-8' encoding
         telnetClient.write(command + '\r\n'); // Send the command to the Telnet server
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('Command sent');
@@ -114,10 +115,11 @@ server.listen(8080, () => {
 setInterval(() => {
   if (telnetClient && !telnetClient.destroyed) {
     telnetClient.on('data', (data) => {
-      const decodedData = Buffer.from(data, 'binary').toString('utf8'); // Specify the character encoding here
+      console.log('Received data from Telnet server:', data.toString()); // Log received data
+      let decodedData = data.toString();
       longPollingClients.forEach((client) => {
-        client.writeHead(200, { 'Content-Type': 'text/plain' });
-        client.end(decodedData);
+        client.writeHead(200, { 'Content-Type': 'text/html' }); // Change content type to 'text/html'
+        client.end(decodedData); // Send decoded data as HTML
       });
       longPollingClients = [];
     });
