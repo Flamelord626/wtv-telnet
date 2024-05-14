@@ -1,5 +1,1 @@
-fuck 
-fuck 
-fuck
-fuck
-IT DOESNT WORK
+This is a experimental p2p telnet to http protocall converter basicly but i never got it finished i might fix it one of these days but nrn so consider it dead until i suddenly decide to work on it or someone forks it and gets it working then i might merge it with the main branch but BEWARE THIS CODE ISNT 100% COMPLETE it doesnt display text properly and cant send proper server requests also it doesnt display on wtv also pritty sure i uploaded the even more broken version where i tryed to display the telnet spesific charicters with sprites but failed  :P
